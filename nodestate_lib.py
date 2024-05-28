@@ -164,14 +164,14 @@ def escolheMelhor(lista):
     node_escolhido = None
     menorvalor = 999
 
-    #acha o nó da lista com menor .errados
+    #acha o no da lista com menor .errados
     for node in lista:
         if node.errados < menorvalor:
             menorvalor = node.errados
             node_escolhido = node
 
     lista.remove(node_escolhido)
-    return node_escolhido #envia o nó da lista com errados menor pro return
+    return node_escolhido #envia o no da lista com errados menor pro return
 
 
 
