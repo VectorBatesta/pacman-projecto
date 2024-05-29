@@ -205,37 +205,36 @@ def depthFirstSearch(problem):
                     ListaFilhos.remove(node) #evita ciclos ou loops
             
             for node in ListaFilhos:
-                ABERTOS.push((node[0], X[1] + [node[1]])) #enfileirar os estados na Fila
+                ABERTOS.push((node[0], X[1] + [node[1]])) #enfileirar os estados na pilha
+    ######################
+    return None
 
 def breadthFirstSearch(problem):
-        ABERTOS = [raiz] #eh uma pilha
-    FECHADOS = []
+    raiz = (problem.getStartState(), [])
 
-    while ABERTOS != []:
-        X = ABERTOS.pop(0) #(0) = primeiro
+    ABERTOS = Queue() #eh uma fila
+    ABERTOS.push(raiz)
+    FECHADOS = Queue()
+
+    while ABERTOS.isEmpty != False:
+        X = ABERTOS.pop() #= primeiro
+        FECHADOS.push(X[0])
         
-        printanode(X)
-        
-        if X.matriz == objetivo:
-            return 'SUCESSO', X
+        if problem.isGoalState(X[0]) == True:
+            return X[1]
         else:
-            if X.nivel < nivelMax:
-                ListaFilhos = gerar_filhos(X)
-                FECHADOS.append(X)
-                
-                for node in ListaFilhos:
-                    for nodeaberto in ABERTOS:
-                        if node.matriz == nodeaberto.matriz:
-                            ListaFilhos.remove(node) #evita ciclos ou loops
-                    for nodefechado in FECHADOS:
-                        if node.matriz == nodefechado.matriz:
-                            ListaFilhos.remove(node) #evita ciclos ou loops
-                        
-                for node in ListaFilhos:
-                    ABERTOS.append(node) #enfileirar os estados na Fila
-            else:
-                break
-    return 'FALHA', None #nao restam mais estados
+            ListaFilhos = problem.getSuccessors(X[0])
+            
+            for node in ListaFilhos:
+                if node in ABERTOS:
+                    ListaFilhos.remove(node) #evita ciclos ou loops
+                if node in FECHADOS:
+                    ListaFilhos.remove(node) #evita ciclos ou loops
+                    
+            for node in ListaFilhos:
+                ABERTOS.push((node[0], X[1] + [node[1]])) #enfileirar os estados na Fila
+    ######################
+    return None
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
