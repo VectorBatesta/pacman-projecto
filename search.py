@@ -207,44 +207,33 @@ from searchTestClasses import GraphSearch
 
 
 def depthFirstSearch(problem):
-    estado = problem.getStartState()
-    print "Node:", estado
-    print "Node eh objetivo?", problem.isGoalState(estado)
-    print "Filhos de node:", problem.getSuccessors(estado)
-
-    #DFS(raiz: nodeState, objetivo, nivelMax):
     raiz = problem.getStartState()
+    print "Node:", raiz
+    print "Node eh objetivo?", problem.isGoalState(raiz)
+    print "Filhos de node:", problem.getSuccessors(raiz)
 
-    ABERTOS = Stack
+    ABERTOS = Stack()
+    print "ababa:", raiz
     ABERTOS.push(raiz) #eh uma pilha
-    FECHADOS = Stack
+    FECHADOS = Stack()
     
-    while ABERTOS != []:
+    while ABERTOS.isEmpty() != False:
         X = ABERTOS.pop() #() = ultimo
-        estado = node.getStartState()
+        FECHADOS.push(X)
         
-        printanode(X)
-        
-        if X.isGoalState(estado):
-            return 'SUCESSO', X
+        if X.isGoalState(X[0]):
+            return X[1]
         else:
-            if X.nivel < nivelMax:
-                ListaFilhos = gerar_filhos(X)
-                FECHADOS.append(X)
-                
-                for node in ListaFilhos:
-                    for nodeaberto in ABERTOS:
-                        if node.matriz == nodeaberto.matriz:
-                            ListaFilhos.remove(node) #evita ciclos ou loops
-                    for nodefechado in FECHADOS:
-                        if node.matriz == nodefechado.matriz:
-                            ListaFilhos.remove(node) #evita ciclos ou loops
-                
-                for node in ListaFilhos:
-                    ABERTOS.append(node) #enfileirar os estados na Fila
-            else:
-                FECHADOS.append(X)
-    return 'FALHA', None #nao restam mais estados
+            ListaFilhos = X.getSucessors(X[0])
+            
+            for node in ListaFilhos:
+                if node in ABERTOS:
+                    ListaFilhos.remove(node) #evita ciclos ou loops
+                if node in FECHADOS:
+                    ListaFilhos.remove(node) #evita ciclos ou loops
+            
+            for node in ListaFilhos:
+                ABERTOS.append(node) #enfileirar os estados na Fila
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
