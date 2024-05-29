@@ -169,34 +169,7 @@ def heuristica_hill_climbing(raiz: nodeState, obj, nivelmax):
 
 
 def BFS(raiz: nodeState, objetivo, nivelMax):
-    ABERTOS = [raiz] #eh uma pilha
-    FECHADOS = []
 
-    while ABERTOS != []:
-        X = ABERTOS.pop(0) #(0) = primeiro
-        
-        printanode(X)
-        
-        if X.matriz == objetivo:
-            return 'SUCESSO', X
-        else:
-            if X.nivel < nivelMax:
-                ListaFilhos = gerar_filhos(X)
-                FECHADOS.append(X)
-                
-                for node in ListaFilhos:
-                    for nodeaberto in ABERTOS:
-                        if node.matriz == nodeaberto.matriz:
-                            ListaFilhos.remove(node) #evita ciclos ou loops
-                    for nodefechado in FECHADOS:
-                        if node.matriz == nodefechado.matriz:
-                            ListaFilhos.remove(node) #evita ciclos ou loops
-                        
-                for node in ListaFilhos:
-                    ABERTOS.append(node) #enfileirar os estados na Fila
-            else:
-                break
-    return 'FALHA', None #nao restam mais estados
 
 
 def 
@@ -235,9 +208,34 @@ def depthFirstSearch(problem):
                 ABERTOS.push((node[0], X[1] + [node[1]])) #enfileirar os estados na Fila
 
 def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+        ABERTOS = [raiz] #eh uma pilha
+    FECHADOS = []
+
+    while ABERTOS != []:
+        X = ABERTOS.pop(0) #(0) = primeiro
+        
+        printanode(X)
+        
+        if X.matriz == objetivo:
+            return 'SUCESSO', X
+        else:
+            if X.nivel < nivelMax:
+                ListaFilhos = gerar_filhos(X)
+                FECHADOS.append(X)
+                
+                for node in ListaFilhos:
+                    for nodeaberto in ABERTOS:
+                        if node.matriz == nodeaberto.matriz:
+                            ListaFilhos.remove(node) #evita ciclos ou loops
+                    for nodefechado in FECHADOS:
+                        if node.matriz == nodefechado.matriz:
+                            ListaFilhos.remove(node) #evita ciclos ou loops
+                        
+                for node in ListaFilhos:
+                    ABERTOS.append(node) #enfileirar os estados na Fila
+            else:
+                break
+    return 'FALHA', None #nao restam mais estados
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
