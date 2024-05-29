@@ -207,13 +207,12 @@ from searchTestClasses import GraphSearch
 
 
 def depthFirstSearch(problem):
-    raiz = problem.getStartState()
+    raiz = (problem.getStartState(), [])
     print "Node:", raiz
     print "Node eh objetivo?", problem.isGoalState(raiz)
     print "Filhos de node:", problem.getSuccessors(raiz)
 
     ABERTOS = Stack()
-    print "ababa:", raiz
     ABERTOS.push(raiz) #eh uma pilha
     FECHADOS = Stack()
     
@@ -221,10 +220,10 @@ def depthFirstSearch(problem):
         X = ABERTOS.pop() #() = ultimo
         FECHADOS.push(X)
         
-        if X.isGoalState(X[0]):
+        if problem.isGoalState(X[0]):
             return X[1]
         else:
-            ListaFilhos = X.getSucessors(X[0])
+            ListaFilhos = problem.getSucessors(X[0])
             
             for node in ListaFilhos:
                 if node in ABERTOS:
@@ -233,7 +232,7 @@ def depthFirstSearch(problem):
                     ListaFilhos.remove(node) #evita ciclos ou loops
             
             for node in ListaFilhos:
-                ABERTOS.append(node) #enfileirar os estados na Fila
+                ABERTOS.push((node[0], X[1] + [node[1]])) #enfileirar os estados na Fila
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
