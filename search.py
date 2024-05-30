@@ -81,8 +81,8 @@ from searchTestClasses import GraphSearch
 def depthFirstSearch(problem):
     raiz = (problem.getStartState(), [])
     print "Node:", raiz
-    print "Node eh objetivo?", problem.isGoalState(raiz)
-    print "Filhos de node:", problem.getSuccessors(raiz)
+    print "Node eh objetivo?", problem.isGoalState(raiz[0])
+    print "Filhos de node:", problem.getSuccessors(raiz[0])
 
     ABERTOS = Stack()
     ABERTOS.push(raiz) #eh uma pilha
