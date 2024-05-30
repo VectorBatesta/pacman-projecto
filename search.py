@@ -86,25 +86,22 @@ def depthFirstSearch(problem):
 
     ABERTOS = Stack()
     ABERTOS.push(raiz) #eh uma pilha
-    FECHADOS = Stack()
+    FECHADOS = set()
     
-    while ABERTOS.isEmpty() != False:
+    while ABERTOS.isEmpty() != True:
         X = ABERTOS.pop() #() = ultimo
-        FECHADOS.push(X)
+        FECHADOS.add(X[0])
         
         if problem.isGoalState(X[0]):
             return X[1]
-        else:
-            ListaFilhos = problem.getSucessors(X[0])
-            
-            for node in ListaFilhos:
-                if node in ABERTOS:
-                    ListaFilhos.remove(node) #evita ciclos ou loops
-                if node in FECHADOS:
-                    ListaFilhos.remove(node) #evita ciclos ou loops
-            
-            for node in ListaFilhos:
-                ABERTOS.push((node[0], X[1] + [node[1]])) #enfileirar os estados na pilha
+        
+        ListaFilhos = problem.getSuccessors(X[0])
+        
+        for node in ListaFilhos:
+            if node[0] in FECHADOS:
+                continue
+
+            ABERTOS.push((node[0], X[1] + [node[1]])) 
     ######################
     return None
 
@@ -113,25 +110,21 @@ def breadthFirstSearch(problem):
 
     ABERTOS = Queue() #eh uma fila
     ABERTOS.push(raiz)
-    FECHADOS = Queue()
+    FECHADOS = set()
 
     while ABERTOS.isEmpty != True:
         X = ABERTOS.pop() #= primeiro
-        FECHADOS.push(X[0])
-        
+
         if problem.isGoalState(X[0]) == True:
             return X[1]
-        else:
-            ListaFilhos = problem.getSuccessors(X[0])
-            
-            for node in ListaFilhos:
-                if node in ABERTOS:
-                    ListaFilhos.remove(node) #evita ciclos ou loops
-                if node in FECHADOS:
-                    ListaFilhos.remove(node) #evita ciclos ou loops
-                    
-            for node in ListaFilhos:
-                ABERTOS.push((node[0], X[1] + [node[1]])) #enfileirar os estados na Fila
+        
+        ListaFilhos = problem.getSuccessors(X[0])
+        
+        for node in ListaFilhos:
+            if node[0] in FECHADOS:
+                continue
+            FECHADOS.add(X[0])
+            ABERTOS.push((node[0], X[1] + [node[1]])) #enfileirar os estados na Fila
     ######################
     return None
 
@@ -140,7 +133,7 @@ def uniformCostSearch(problem):
 
     ABERTOS = PriorityQueue()
     ABERTOS.push(raiz, 0)
-    FECHADOS = Queue()
+    FECHADOS = set()
 
     while ABERTOS.isEmpty != True:
         X = ABERTOS.pop()
@@ -160,19 +153,13 @@ def uniformCostSearch(problem):
         #############
     return None
 
-def nullHeuristic(state, problem=None):
-    """
-    A heuristic function estimates the cost from the current state to the nearest
-    goal in the provided SearchProblem.  This heuristic is trivial.
-    """
-    return 0
 
-def aStarSearch(problem, heuristic=nullHeuristic):
+def aStarSearch(problem):
     raiz = (problem.getStartState(), [], 0)
 
     ABERTOS = PriorityQueue()
     ABERTOS.push(raiz, 0)
-    FECHADOS = Queue()
+    FECHADOS = set()
 
     while ABERTOS.isEmpty != True:
         filhoAtual = ABERTOS.pop()
@@ -182,7 +169,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
         #################
         if filhoAtual[0] not in FECHADOS:
-            FECHADOS.push(filhoAtual[0])
+            FECHADOS.add(filhoAtual[0])
             
             ListaFilhos = problem.getSuccessors(filhoAtual[0])
 
@@ -191,7 +178,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                     heuristica_custos = []
 
                     heuristica_custos.append(filhoAtual[2] + node[2]) #custo f ou g
-                    heuristica_custos.append(heuristica_custos[0] + heuristic(node[0], problem)) #custo total
+                    heuristica_custos.append(heuristica_custos[0]) #custo total
 
                     ABERTOS.push((node[0], filhoAtual[1] + [node[1]], heuristica_custos[0]), heuristica_custos[1])
                     #dupla/tupla
