@@ -73,107 +73,6 @@ def tinyMazeSearch(problem):
     return  [s, s, w, s, w, w, s, w]
 
 
-"""
-def astar(raiz: nodeState, obj):
-    ABERTOS = [raiz]
-    FECHADOS = []
-
-    while ABERTOS != []:
-        filhoAtual = ABERTOS.pop(0)
-        printanode(filhoAtual)
-
-        if filhoAtual.matriz == obj:
-            return 'SUCESSO', filhoAtual
-        
-        filhosGerados = gerar_filhos(filhoAtual)
-
-        #################
-        for filhoGerado in filhosGerados:
-            atualizaErrados(filhoGerado, obj)
-            
-            #atualiza valor heuristico Fn
-            filhoGerado.heuristico = (filhoGerado.errados * 2) + filhoGerado.nivel
-
-            #detecta se esta repetido em abertos ou fechados
-            repetido = False
-            for nodeAberto in ABERTOS:
-                if filhoGerado.matriz == nodeAberto.matriz: #ja esta em abertos 
-                    repetido = True
-                    #Se o filho foi alcancado por um caminho mais curto, entao:
-                    #* de ao estado em ABERTOS o caminho mais curto
-                    if filhoGerado.nivel < nodeAberto.nivel:
-                        nodeAberto.pai = filhoGerado.pai
-                    break
-
-            for nodeFechado in FECHADOS:
-                if repetido == True:
-                    break
-
-                if filhoGerado.matriz == nodeFechado.matriz: #ja esta em fechados 
-                    repetido = True
-                    #Se o filho foi alcancado por um caminho mais curto, entao:
-                    #* retire o estado de FECHADOS
-                    #* adicione o filho em ABERTOS
-                    if filhoGerado.nivel < nodeFechado.nivel:
-                        FECHADOS.remove(nodeFechado)
-                        ABERTOS.append(filhoGerado)
-                    break
-            
-            if repetido == False: #nao esta em fechados ou abertos
-                ABERTOS.append(filhoGerado)
-        ######################
-
-        FECHADOS.append(filhoAtual)
-        ABERTOS.sort(key=lambda x: x.heuristico) #funcao achada no google
-    return 'FALHA', None
-
-
-def heuristica_hill_climbing(raiz: nodeState, obj, nivelmax):
-    atualizaErrados(raiz, obj)
-
-    ABERTOS = [raiz]
-    FECHADOS = []
-
-    while ABERTOS != []:
-        #pega o no dos abertos (ou seja, sem filhos) com menor quant de errados
-        X = escolheMelhor(ABERTOS) #escolheMelhor da pop() em ABERTOS
-        FECHADOS.append(X)
-
-        atualizaErrados(X, obj)
-        
-        #se errados == 0, entao eh o objetivo!
-        if X.errados == 0: 
-            return 'SUCESSO', X
-        
-        listanova = gerar_filhos(X)
-        #detecta se nos novos sao repetidos ou sao acima do nivelmax
-        for node in listanova:
-            adicionarAbertos = True
-
-            if node.nivel > nivelmax:
-                adicionarAbertos = False
-
-            for nodefechado in FECHADOS:
-                if node.matriz == nodefechado.matriz:
-                    adicionarAbertos = False
-            
-            for nodeaberto in ABERTOS:
-                if node.matriz == nodeaberto.matriz:
-                    adicionarAbertos = False
-
-            if adicionarAbertos == True:
-                ABERTOS.append(node)
-        #############
-        printanode(X)
-
-
-
-def BFS(raiz: nodeState, objetivo, nivelMax):
-
-
-
-def 
-"""
 
 from util import *
 from searchTestClasses import GraphSearch
@@ -216,7 +115,7 @@ def breadthFirstSearch(problem):
     ABERTOS.push(raiz)
     FECHADOS = Queue()
 
-    while ABERTOS.isEmpty != False:
+    while ABERTOS.isEmpty != True:
         X = ABERTOS.pop() #= primeiro
         FECHADOS.push(X[0])
         
@@ -237,9 +136,29 @@ def breadthFirstSearch(problem):
     return None
 
 def uniformCostSearch(problem):
-    """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    raiz = (problem.getStartState(), [], 0)
+
+    ABERTOS = PriorityQueue()
+    ABERTOS.push(raiz, 0)
+    FECHADOS = Queue()
+
+    while ABERTOS.isEmpty != True:
+        X = ABERTOS.pop()
+        
+        if problem.isGoalState(X[0]): 
+            return X[1]
+
+        if X[0] not in FECHADOS:
+            FECHADOS.add(X[0])
+
+            ListaFilhos = problem.getSuccessors(X[0])
+
+            for node in ListaFilhos:
+                if node[0] not in FECHADOS:
+                    heuristica = X[2] + node[2]
+                ABERTOS.push((node[0], X[1] + [node[1]], heuristica), heuristica)
+        #############
+    return None
 
 def nullHeuristic(state, problem=None):
     """
@@ -249,9 +168,36 @@ def nullHeuristic(state, problem=None):
     return 0
 
 def aStarSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    raiz = (problem.getStartState(), [], 0)
+
+    ABERTOS = PriorityQueue()
+    ABERTOS.push(raiz, 0)
+    FECHADOS = Queue()
+
+    while ABERTOS.isEmpty != True:
+        filhoAtual = ABERTOS.pop()
+
+        if problem.isGoalState(filhoAtual[0]):
+            return filhoAtual[1]
+
+        #################
+        if filhoAtual[0] not in FECHADOS:
+            FECHADOS.push(filhoAtual[0])
+            
+            ListaFilhos = problem.getSuccessors(filhoAtual[0])
+
+            for node in ListaFilhos:
+                if node[0] not in FECHADOS:
+                    heuristica_custos = []
+
+                    heuristica_custos.append(filhoAtual[2] + node[2]) #custo f ou g
+                    heuristica_custos.append(heuristica_custos[0] + heuristic(node[0], problem)) #custo total
+
+                    ABERTOS.push((node[0], filhoAtual[1] + [node[1]], heuristica_custos[0]), heuristica_custos[1])
+                    #dupla/tupla
+        ######################
+    return None
+
 
 
 # Abbreviations
